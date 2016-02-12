@@ -1,3 +1,4 @@
+
 module SpreeAvataxCertified
   class Line
     attr_reader :order, :invoice_type, :lines, :stock_locations, :refund
@@ -134,7 +135,7 @@ module SpreeAvataxCertified
       line = {
           :LineNo => "#{line_item.id}-TOG",
           :Description => line_item.name[0..255],
-          :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
+          :TaxCode => line_item.tax_category.try(:description) || 'PC040100',
           :ItemCode => line_item.variant.sku,
           :Qty => 1,
           :Amount => -amount.to_f,
@@ -152,6 +153,7 @@ module SpreeAvataxCertified
       {
         LineNo: "#{refund.id}-RA",
         ItemCode: refund.transaction_id || 'Refund',
+        TaxCode: 'PC040100',
         Qty: 1,
         Amount: -refund.amount.to_f,
         OriginCode: 'Orig',
@@ -169,7 +171,7 @@ module SpreeAvataxCertified
       line = {
         :LineNo => "#{line_item.id}-LI",
         :Description => line_item.name[0..255],
-        :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
+        :TaxCode => line_item.tax_category.try(:description) || 'PC040100',
         :ItemCode => line_item.variant.sku,
         :Qty => quantity,
         :Amount => -amount.to_f,
