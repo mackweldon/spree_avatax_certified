@@ -36,7 +36,7 @@ module SpreeAvataxCertified
         :TaxCode => line_item.tax_category.try(:tax_code) || 'P0000000',
         :ItemCode => line_item.variant.sku,
         :Qty => line_item.quantity,
-        :Amount => line_item.discounted_amount.to_f,
+        :Amount => line_item.amount.to_f,
         :OriginCode => stock_location,
         :DestinationCode => 'Dest',
         :CustomerUsageType => customer_usage_type,
