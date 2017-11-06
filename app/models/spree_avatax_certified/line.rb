@@ -40,7 +40,7 @@ module SpreeAvataxCertified
         :OriginCode => stock_location,
         :DestinationCode => 'Dest',
         :CustomerUsageType => customer_usage_type,
-        :Discounted => order.promo_total.abs > 0.0
+        :Discounted => line_item.adjustments.eligible.promotion.sum(:amount).abs > 0
       }
 
       @logger.debug line
