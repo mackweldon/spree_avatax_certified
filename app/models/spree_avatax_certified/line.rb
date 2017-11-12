@@ -15,7 +15,7 @@ module SpreeAvataxCertified
     end
 
     def build_lines
-      @logger.info('build lines')
+      # @logger.info('build lines')
 
       if %w(ReturnInvoice ReturnOrder).include?(invoice_type)
         refund_lines
@@ -26,7 +26,7 @@ module SpreeAvataxCertified
     end
 
     def item_line(line_item)
-      @logger.info('build line_item line')
+      # @logger.info('build line_item line')
 
       stock_location = get_stock_location(@stock_locations, line_item)
 
@@ -49,7 +49,7 @@ module SpreeAvataxCertified
     end
 
     def item_lines_array
-      @logger.info('build line_item lines')
+      # @logger.info('build line_item lines')
       line_item_lines = []
 
       order.line_items.each do |line_item|
@@ -63,7 +63,7 @@ module SpreeAvataxCertified
     end
 
     def shipment_lines_array
-      @logger.info('build shipment lines')
+      # @logger.info('build shipment lines')
 
       ship_lines = []
       order.shipments.each do |shipment|
@@ -91,7 +91,7 @@ module SpreeAvataxCertified
         :TaxCode => shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
       }
 
-      @logger.debug shipment_line
+      # @logger.debug shipment_line
 
       shipment_line
     end
@@ -128,7 +128,7 @@ module SpreeAvataxCertified
     end
 
     def tog_item_line(line_item, amount)
-      @logger.info('build tog_item line')
+      # @logger.info('build tog_item line')
 
       stock_location = get_stock_location(@stock_locations, line_item)
 
@@ -164,7 +164,7 @@ module SpreeAvataxCertified
     end
 
     def return_item_line(line_item, quantity, amount)
-      @logger.info('build line_item line')
+      # @logger.info('build line_item line')
 
       stock_location = get_stock_location(@stock_locations, line_item)
 
@@ -180,17 +180,17 @@ module SpreeAvataxCertified
         :CustomerUsageType => customer_usage_type
       }
 
-      @logger.debug line
+      # @logger.debug line
 
       line
     end
 
     def order_stock_locations
-      @logger.info('getting stock locations')
+      # @logger.info('getting stock locations')
 
       stock_location_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
       stock_locations = Spree::StockLocation.where(id: stock_location_ids)
-      @logger.debug stock_locations
+      # @logger.debug stock_locations
       stock_locations
     end
 

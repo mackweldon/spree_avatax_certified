@@ -18,7 +18,7 @@ Spree::Order.class_eval do
   end
 
   def avalara_capture
-    logger.debug 'avalara capture'
+    logger.debug "avalara capture #{self.number}"
     begin
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
@@ -29,12 +29,12 @@ Spree::Order.class_eval do
       @rtn_tax
     rescue => e
       logger.debug e
-      logger.debug 'error in avalara capture'
+      logger.debug "error in avalara capture for #{self.number} #{e.message} #{e.backtrace}"
     end
   end
 
   def avalara_capture_finalize
-    logger.debug 'avalara capture finalize'
+    logger.debug "avalara capture finalize #{self.number}"
     begin
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
@@ -44,7 +44,7 @@ Spree::Order.class_eval do
       @rtn_tax
     rescue => e
       logger.debug e
-      logger.debug 'error in avalara capture finalize'
+      logger.debug "error in avalara capture finalize for  #{self.number}"
     end
   end
 
@@ -58,6 +58,6 @@ Spree::Order.class_eval do
   private
 
   def logger
-    @logger ||= AvataxHelper::AvataxLog.new('avalara_order', 'order class', 'start order processing')
+    @logger ||= AvataxHelper::AvataxLog.new('avalara_order', 'order class', "start order processing for #{self.number}")
   end
 end
