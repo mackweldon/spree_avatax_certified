@@ -40,7 +40,7 @@ module Spree
           { TotalTax: '0.00' }
         end
       else
-        AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
+        # AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
         'avalara document committing disabled'
       end
     end
@@ -52,7 +52,7 @@ module Spree
     private
 
     def cancel_order_to_avalara(doc_type = 'SalesInvoice')
-      AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
+      # AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
         CompanyCode: Spree::Config.avatax_company_code,
@@ -61,25 +61,25 @@ module Spree
         CancelCode: 'DocVoided'
       }
 
-      AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
+      # AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
 
       mytax = TaxSvc.new
       cancel_tax_result = mytax.cancel_tax(cancel_tax_request)
 
-      AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
+      # AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
 
       if cancel_tax_result == 'error in Tax'
         return 'Error in Tax'
       else
         if cancel_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
+          # AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
           return cancel_tax_result
         end
       end
     end
 
     def post_order_to_avalara(commit = false, invoice_detail = nil)
-      AVALARA_TRANSACTION_LOGGER.info('post order to avalara')
+      # AVALARA_TRANSACTION_LOGGER.info('post order to avalara')
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
@@ -87,9 +87,9 @@ module Spree
 
       unless response.nil?
         if response['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info('Address Validation Success')
+          # AVALARA_TRANSACTION_LOGGER.info("Address Validation Success for #{order.number}")
         else
-          AVALARA_TRANSACTION_LOGGER.info('Address Validation Failed')
+          AVALARA_TRANSACTION_LOGGER.info("Address Validation Failed for #{order.number}")
         end
       end
 
@@ -102,19 +102,19 @@ module Spree
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
 
-      AVALARA_TRANSACTION_LOGGER.debug gettaxes
+      # AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
 
       tax_result = mytax.get_tax(gettaxes)
 
-      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
+      # AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
       if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
         if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          # AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
           @myrtntax = tax_result
         end
       end
@@ -122,7 +122,7 @@ module Spree
     end
 
     def post_return_to_avalara(commit = false, invoice_detail = nil, refund = nil)
-      AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
+      # AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail, refund)
@@ -143,19 +143,19 @@ module Spree
 
       gettaxes[:TaxOverride] = taxoverride
 
-      AVALARA_TRANSACTION_LOGGER.debug gettaxes
+      # AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
 
       tax_result = mytax.get_tax(gettaxes)
 
-      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
+      # AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
       if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
         if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          # AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
           @myrtntax = tax_result
         end
       end

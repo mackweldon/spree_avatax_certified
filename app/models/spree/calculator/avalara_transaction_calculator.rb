@@ -14,7 +14,7 @@ module Spree
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         avalara_response = get_avalara_response(item.order)
-
+## TODO: this has an error response which is not handled
         tax_for_item(item, avalara_response)
       end
     end

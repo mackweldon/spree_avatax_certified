@@ -2,7 +2,8 @@ module AvataxHelper
   class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
       schedule = "weekly" unless schedule != nil
-      @logger ||= Logger.new("#{Rails.root}/log/#{path_name}.log", schedule)
+      #@logger ||= Logger.new("#{Rails.root}/log/#{path_name}.log", schedule)
+      @logger ||= Rails.logger
       progname(file_name.split("/").last.chomp(".rb"))
       info(log_info) unless log_info.nil?
     end
@@ -23,7 +24,7 @@ module AvataxHelper
 
     def info(log_info = nil)
       if logger_enabled?
-        logger.info log_info unless log_info.nil?
+        logger.info "[AVATAX] #{log_info}" unless log_info.nil?
       end
     end
 
@@ -31,9 +32,9 @@ module AvataxHelper
       if logger_enabled?
         logger.info log_info
         if response.is_a?(Hash)
-          logger.debug JSON.generate(response)
+          logger.debug "[AVATAX] #{JSON.generate(response)}"
         else
-          logger.debug response
+          logger.debug "[AVATAX] #{response}"
         end
       end
     end
@@ -41,11 +42,11 @@ module AvataxHelper
 
     def debug(error, text = nil)
       if logger_enabled?
-        logger.debug error
+        logger.debug  "[AVATAX] #{error}"
         if text.nil?
           error
         else
-          logger.debug text
+          logger.debug  "[AVATAX] #{text}"
           text
         end
       end
