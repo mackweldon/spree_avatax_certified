@@ -16,6 +16,10 @@ module Spree
       post_order_to_avalara(false, 'SalesOrder')
     end
 
+    def lookup_by_doc_code
+      get_transaction_from_avalara()
+    end
+
     def commit_avatax(invoice_dt = nil, refund = nil)
       if tax_calculation_enabled?
         if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
@@ -76,6 +80,14 @@ module Spree
           return cancel_tax_result
         end
       end
+    end
+
+    def get_transaction_from_avalara
+      params = {
+        DocCode: order.number,
+      }
+      mytax = TaxSvc.new
+      mytax.get_transaction(params)
     end
 
     def post_order_to_avalara(commit = false, invoice_detail = nil)

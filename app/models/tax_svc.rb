@@ -26,6 +26,19 @@ class TaxSvc
     'error in Tax'
   end
 
+  def get_transaction(request_hash)
+    log(__method__, request_hash)
+
+    RestClient.log = logger.logger
+    transactionCode = request_hash[:DocCode]
+    res = response_get("api/v2/companies/#{Spree::Config.avatax_company_code}/transactions/#{transactionCode}", request_hash)
+    return res
+  rescue => e
+    logger.info 'Rest Client Error'
+    logger.debug e, "error in Tax #{e.message} #{e.stacktrace}"
+    'error in Tax'
+  end
+
   def cancel_tax(request_hash)
     if tax_calculation_enabled?
       log(__method__, request_hash)
@@ -95,6 +108,14 @@ class TaxSvc
   def response(uri, request_hash)
     url = service_url + uri
     res = RestClient.post(url, JSON.generate(request_hash), authorization: credential, content_type: 'application/json') do |response|
+      response
+    end
+    JSON.parse(res)
+  end
+
+  def response_get(uri, request_hash)
+    url = "https://rest.avatax.com/" + uri
+    res = RestClient.get(url, authorization: credential, content_type: 'application/json') do |response|
       response
     end
     JSON.parse(res)
