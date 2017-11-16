@@ -42,9 +42,6 @@ module SpreeAvataxCertified
         :CustomerUsageType => customer_usage_type,
         :Discounted => line_item.discountable?
       }
-    end
-
-    }
 
       @logger.debug line
 
